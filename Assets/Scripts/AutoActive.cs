@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class AutoActive : MonoBehaviour
 {
+
     bool pressed = false;
     Button button;
 

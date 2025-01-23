@@ -9,11 +9,11 @@ public class BetAlgorithm : MonoBehaviour
     public static BetAlgorithm Instance; // Singleton instance
     private float betValue = 1.00f; // Initial bet value
     private bool isBetting = false; // Flag to check if the bet is in progress
-    public bool isAutoMode1 = false; // Flag to check if the bet is in auto mode for first slot
-    public bool isAutoMode2 = false; // Flag to check if the bet is in auto mode for second slot
+    private bool isAutoMode1 = false; // Flag to check if the bet is in auto mode for first slot
+    private bool isAutoMode2 = false; // Flag to check if the bet is in auto mode for second slot
     private TextMeshProUGUI betText;  // UI Text component to display the bet value
     private float incrementRate ;  // Increment rate of the bet value
-    private float elapsedTime = 5f;
+    private float betTimeRange = 5f; 
     private float betRate1, betRate2;
     private float cashValue1, cashValue2;
     private float autoRange1, autoRange2;
@@ -41,7 +41,7 @@ public class BetAlgorithm : MonoBehaviour
     void Start()
     {
         betText.text = betValue.ToString("F2") + "x";
-        elapsedTime = Random.Range(1f, 10f);
+        betTimeRange = Random.Range(1f, 10f);
         incrementRate = Random.Range(0.05f, 0.5f);
         betRate1 = 0;
         betRate2 = 0;
@@ -73,8 +73,30 @@ public class BetAlgorithm : MonoBehaviour
     // start the bet (connected with start button)
     public void StartBet()
     {
+        // Error handling for empty cash input
+        if(cashInput1.text == "" || cashInput2.text == ""){
+            Debug.Log("Please enter the value of Cash in Slot 1 and Slot 2");
+            outText1.color = Color.red;
+            outText1.fontSize = 10;
+            outText1.text = "Please enter the value of Cash in Slot 1 and Slot 2";
+            outText2.color = Color.red;
+            outText2.fontSize = 10;
+            outText2.text = "Please enter the value of Cash in Slot 1 and Slot 2";
+            return;
+        }else{
+            outText1.text = "";
+            outText1.fontSize = 32;
+            outText1.color = Color.white;
+            outText2.text = "";
+            outText2.fontSize = 32;
+            outText2.color = Color.white;
+            cashValue1 = float.Parse(cashInput1.text);
+            cashValue2 = float.Parse(cashInput2.text);
+        }
+
+        // start the bet if not already started
         if(!isBetting){
-            elapsedTime = Random.Range(1f, 10f); // Initialize elapsedTime
+            betTimeRange = Random.Range(1f, 20f); // Initialize betting time range
             isBetting = true; // Set isIncrementing to true
             betButton1.GetComponentInChildren<TextMeshProUGUI>().text = "Check Out";
             betButton2.GetComponentInChildren<TextMeshProUGUI>().text = "Check Out";
@@ -85,8 +107,7 @@ public class BetAlgorithm : MonoBehaviour
             if(autoButton2.enabled){
                 betButton2.enabled = true;
             }
-            cashValue1 = float.Parse(cashInput1.text);
-            cashValue2 = float.Parse(cashInput2.text);
+            
             outText1.text = "";
             outText2.text = "";
             betRate1 = 0;
@@ -123,8 +144,8 @@ public class BetAlgorithm : MonoBehaviour
     
     private void RandomlyStopIncrement()
     {
-        elapsedTime -= Time.deltaTime;
-        if (elapsedTime <= 0)
+        betTimeRange -= Time.deltaTime;
+        if (betTimeRange <= 0)
         {
             isBetting = false;
         }
@@ -152,6 +173,7 @@ public class BetAlgorithm : MonoBehaviour
         }
     }
 
+    // Cash out for slot 1 (connected with cash out button for slot 1)
     public void CashOut1()
     {
         if (isBetting)
@@ -163,6 +185,8 @@ public class BetAlgorithm : MonoBehaviour
             betButton1.GetComponentInChildren<TextMeshProUGUI>().text = "Congrats!";
         }
     }
+
+    // Cash out for slot 2 (connected with cash out button for slot 2)
     public void CashOut2()
     {
         if (isBetting)
@@ -176,7 +200,27 @@ public class BetAlgorithm : MonoBehaviour
         }
     }
 
+    // Auto mode for the slot1 (connected with auto button for slot 1)
     public void AutoMode1(){
+        // Error handling for empty auto input
+        if(autoInput1.text == "" || cashInput1.text == "" || float.Parse(autoInput1.text) < float.Parse(cashInput1.text)){
+            Debug.Log("Please enter the proper value Auto Value in Slot 1");
+            outText1.color = Color.red;
+            outText1.fontSize = 10;
+            outText1.text = "Please enter proper the value Auto Value in Slot 1";
+            autoButton1.image.color = Color.white;
+            autoButton1.GetComponentInChildren<TextMeshProUGUI>().color = Color.black;
+            autoButton1.GetComponent<AutoActive>().onClick();
+            isAutoMode1 = false;
+            return;
+
+        }else{
+            outText1.text = "";
+            outText1.fontSize = 32;
+            outText1.color = Color.white;
+        }
+        
+        // Toggle the auto mode
         if(isAutoMode1){
             isAutoMode1 = false;
             autoRange1 = 0f;
@@ -185,7 +229,26 @@ public class BetAlgorithm : MonoBehaviour
             autoRange1 = float.Parse(autoInput1.text);
         }
     }
+
+    // Auto mode for the slot2 (connected with auto button for slot 2)
     public void AutoMode2(){
+        // Error handling for empty auto input
+        if(autoInput2.text == "" || cashInput2.text == "" || float.Parse(autoInput2.text) < float.Parse(cashInput2.text)){
+            Debug.Log("Please enter the proper value Auto Value in Slot 2");
+            outText2.color = Color.red;
+            outText2.fontSize = 10;
+            outText2.text = "Please enter the proper value Auto Value in Slot 2";
+            autoButton2.image.color = Color.white;
+            autoButton2.GetComponentInChildren<TextMeshProUGUI>().color = Color.black;
+            autoButton2.GetComponent<AutoActive>().onClick();
+            return;
+        }else{
+            outText2.text = "";
+            outText2.fontSize = 32;
+            outText2.color = Color.white;
+        }
+
+        // Toggle the auto mode
         if(isAutoMode2){
             isAutoMode2 = false;
             autoRange2 = 0f;

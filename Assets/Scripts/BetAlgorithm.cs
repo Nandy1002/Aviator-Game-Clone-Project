@@ -4,9 +4,9 @@ using UnityEngine.UI;
 
 public class BetAlgorithm : MonoBehaviour
 {
-    public static BetAlgorithm Instance{get; private set;}
-    public float betValue = 1.00f; // Initial bet value
-    public bool isBetting = false;
+    public static BetAlgorithm Instance;
+    private float betValue = 1.00f; // Initial bet value
+    private bool isBetting = false;
     private TextMeshProUGUI betText;
     [SerializeField] private float incrementRate = 0.1f;
     private float elapsedTime = 5f;
@@ -16,6 +16,7 @@ public class BetAlgorithm : MonoBehaviour
 
     void Awake()
     {
+        Instance = this;
         betText = GetComponent<TextMeshProUGUI>();
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -77,4 +78,15 @@ public class BetAlgorithm : MonoBehaviour
             betText.color = Color.red;
         }
     }
+
+    public float GetBetValue(){
+        return betValue;
+    }
+    public void SetBetValue(float value){
+        betValue = value;
+    }
+    public bool IsBetting(){
+        return isBetting;
+    }
 }
+

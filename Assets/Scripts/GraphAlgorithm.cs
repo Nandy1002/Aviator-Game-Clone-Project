@@ -33,10 +33,14 @@ public class GraphAlgorithm : MonoBehaviour
             if(curveture > -1.5){
                 curveture -= BetAlgorithm.Instance.GetBetValue() * Time.deltaTime*0.5f; // Ensure the value is scaled by Time.deltaTime
             }
-            if(vertexCount < 25 && endPoint.transform.localPosition.y > 0.2){
+            if(vertexCount < 25 && endPoint.transform.localPosition.y > 0.3){
                 vertexCount += 1f; // Ensure the value is scaled by Time.deltaTime
             }
             endPoint.transform.localPosition = localPosition;
+        }else{
+            ResetEndPoint();
+            vertexCount = 1;
+            curveture = -0.001f;
         }
         
 
@@ -60,8 +64,7 @@ public class GraphAlgorithm : MonoBehaviour
     }
 
     public void ResetEndPoint(){
-        if(!BetAlgorithm.Instance.IsBetting()){
-            endPoint.transform.localPosition = new Vector2(0, 0);
-        }
+        endPoint.transform.localPosition = new Vector2(0, 0);
+        
     }
 }

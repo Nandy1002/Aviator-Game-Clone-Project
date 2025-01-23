@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,11 +9,16 @@ public class BetAlgorithm : MonoBehaviour
     private float betValue = 1.00f; // Initial bet value
     private bool isBetting = false;
     private TextMeshProUGUI betText;
-    [SerializeField] private float incrementRate = 0.1f;
+    private float incrementRate ;
     private float elapsedTime = 5f;
 
+    [SerializeField] private Button startButton;
     [SerializeField] private Button betButton1;
     [SerializeField] private Button betButton2;
+    [SerializeField] private Button autoButton1;
+    [SerializeField] private Button autoButton2;
+    [SerializeField] private TextMeshProUGUI outText1;
+    [SerializeField] private TextMeshProUGUI outText2;
 
     void Awake()
     {
@@ -24,6 +30,8 @@ public class BetAlgorithm : MonoBehaviour
     {
         betText.text = betValue.ToString("F2") + "x";
         elapsedTime = Random.Range(1f, 10f);
+        incrementRate = Random.Range(0.05f, 0.5f);
+
     }
 
     // Update is called once per frame
@@ -48,6 +56,7 @@ public class BetAlgorithm : MonoBehaviour
         }else{
             elapsedTime = Random.Range(1f, 10f); // Initialize elapsedTime
             isBetting = true; // Set isIncrementing to true
+            StartCoroutine(UpdateIncrementRate());
         }
     }
 
@@ -61,6 +70,15 @@ public class BetAlgorithm : MonoBehaviour
         }
     }
 
+     private IEnumerator UpdateIncrementRate()
+    {
+        while (isBetting)
+        {
+            incrementRate = Random.Range(0.05f, 0.5f); // Set incrementRate to a random value between 0.05 and 0.2
+            yield return new WaitForSeconds(Random.Range(0.1f, 2f)); // Wait for 1 to 2 seconds
+        }
+    }
+    
     private void StopIncrement()
     {
         elapsedTime -= Time.deltaTime;

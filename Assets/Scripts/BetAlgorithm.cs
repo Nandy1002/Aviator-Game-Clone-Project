@@ -30,12 +30,13 @@ public class BetAlgorithm : MonoBehaviour
     [SerializeField] private TMP_InputField cashInput2;
     [SerializeField] private TMP_InputField autoInput1;
     [SerializeField] private TMP_InputField autoInput2;
+    [SerializeField] private GameObject planePrefab;
 
     void Awake()
     {
         Instance = this;
         betText = GetComponent<TextMeshProUGUI>();
-        
+        planePrefab.SetActive(false);
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -119,6 +120,9 @@ public class BetAlgorithm : MonoBehaviour
             if(isAutoMode2){
                 autoRange2 = float.Parse(autoInput2.text);
             }
+
+            planePrefab.SetActive(true);
+
             StartCoroutine(UpdateIncrementRate());
         }
     }
@@ -169,7 +173,7 @@ public class BetAlgorithm : MonoBehaviour
             startButton.enabled = true;
             betButton1.enabled = false;
             betButton2.enabled = false;
-
+            planePrefab.SetActive(false);
         }
     }
 
